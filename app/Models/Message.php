@@ -11,7 +11,7 @@ use App\Models\User;
 class Message extends Model
 {
     use HasFactory;
-    protected $fillable = ['sender_id', 'receiver_id', 'content', 'is_read', 'status'];
+    protected $fillable = ['sender_id', 'receiver_id', 'content', 'read_at', 'status'];
 
     public function sender():BelongsTo
     {

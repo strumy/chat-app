@@ -12,7 +12,7 @@ class MessageRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -25,8 +25,8 @@ class MessageRequest extends FormRequest
         return [
             'sender_id' => 'required',
             'receiver_id' => 'required',
-            'content' => ['required', 'string', 'max:500'],
-            'is_read' => 'required',
+            'content' => ['required', 'string', 'max:5000'],
+            'read_at' => 'nullable',
             'status' => 'required',
         ];
     }

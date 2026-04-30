@@ -13,22 +13,12 @@ return new class extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->integer('sender_id')->unsigned();
-            $table->integer('receiver_id')->unsigned();
-            $table->boolean('is_read')->default(false);
+            $table->foreignId('sender_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('receiver_id')->constrained('users')->cascadeOnDelete();
+            $table->text('content');
+            $table->timestamp('read_at')->nullable();
             $table->boolean('status')->default(false);
             $table->timestamps();
-            
-            $table->foreign('sender_id')->references('id')
-                ->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-            $table->foreign('receiver_id')->references('id')
-                ->on('users')
-                ->onDelete('cascade')
-                ->onUpdate('cascade');
-            $table->text('content');
-            
         });
     }
 

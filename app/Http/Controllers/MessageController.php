@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
-use Illuminate\Http\Request;
 use App\Http\Requests\MessageRequest;
 
 class MessageController extends Controller
@@ -44,9 +43,6 @@ class MessageController extends Controller
     public function update(MessageRequest $request, $id)
     {
         $validated = $request->validated();
-
-        $message = Message::create($validated);
-
         $message = Message::findOrFail($id);
         $message->update($validated);
 
