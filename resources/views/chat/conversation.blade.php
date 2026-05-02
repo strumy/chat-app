@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.chat')
 
 @section('sidebar')
 <div class="list-group list-group-flush">

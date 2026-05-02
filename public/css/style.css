@@ -1,0 +1,14 @@
+
+body {
+    overflow: scroll;
+}
+.sidebar {
+    width: 260px;
+    height: 90vh;
+    overflow-y: auto;
+    border-right: 1px solid #ddd;
+}
+.chat-container {
+    height: calc(100vh - 200px);
+    overflow: hidden;
+}
