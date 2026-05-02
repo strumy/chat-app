@@ -1,7 +1,7 @@
 @if (Route::has('login'))
     <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="{{ url('/') }}">
                 <img src="{{ asset('images/chat_logo.png') }}" width="40" height="40" class="d-inline-block align-top" alt="">
                 ChatApp
             </a>
