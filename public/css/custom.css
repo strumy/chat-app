@@ -11034,3 +11034,15 @@ html {
 .copyright {
   background-color: #1a252f;
 }
+
+/*Custom Chat specific*/
+.sidebar {
+    width: 260px;
+    height: 80vh;
+    overflow-y: auto;
+    border-right: 1px solid #ddd;
+}
+.chat-container {
+    height: calc(100vh - 200px);
+    overflow: hidden;
+}

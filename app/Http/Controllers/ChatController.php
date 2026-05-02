@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\MessageRequest;
 use \Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Message;
@@ -12,11 +11,6 @@ class ChatController extends Controller
     public function index() {
         $users = User::where('id', '!=', auth()->id())->get();
         return view('chat.index', compact('users'));
-    }
-
-    public function dashboard() {
-        $users = User::where('id', '!=', auth()->id())->get();
-        return view('dashboard', compact('users'));
     }
 
     public function conversation(User $user) {
@@ -36,7 +30,8 @@ class ChatController extends Controller
 
             //return response()->json([$messages]);
         }
-        return view('chat.conversation', compact('user'));
+        $users = User::where('id', '!=', auth()->id())->get();
+        return view('chat.conversation', compact('user', 'users'));
     }
 
     public function send(Request $request, User $user) {
