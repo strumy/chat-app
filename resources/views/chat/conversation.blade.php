@@ -56,9 +56,28 @@ function chatComponent(userId, fetchUrl, sendUrl) {
         loading: false, 
 
         init() {
-            console.log("fetchUrl:", this.fetchUrl);
+            //console.log("fetchUrl:", this.fetchUrl);
             this.loadMessages();
-            setInterval(() => this.loadMessages(), 3000);
+            //setInterval(() => this.loadMessages(), 3000);
+
+            if (window.Echo) {
+                window.Echo.private('chat.' + this.authId)
+                    .subscribed(() => {
+                        console.log('Subscribed to chat.' + this.authId);
+                    })
+                    .error((error) => {
+                        console.error('Subscription error:', error);
+                    })
+                    .listen('MessageSent', (e) => {
+                        console.log('Message received:', e);
+                        this.messages.push(e.message);
+                        this.$nextTick(() => {
+                            this.$refs.messagesBox.scrollTop = this.$refs.messagesBox.scrollHeight;
+                        });
+                    });
+            } else {
+                console.error("Echo not loaded yet");
+            }
         },
 
         async loadMessages() {
@@ -90,10 +109,8 @@ function chatComponent(userId, fetchUrl, sendUrl) {
                     'Accept': 'application/json'
                 },
                 body: JSON.stringify(
-                    { 
-                        sender_id: this.authId,
+                    {
                         receiver_id: userId,
-                        status: true,
                         content: this.content
                     })
             });

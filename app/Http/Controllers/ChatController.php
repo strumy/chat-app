@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use \Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Message;
+use App\Events\MessageSent;
 
 class ChatController extends Controller
 {
@@ -45,6 +46,12 @@ class ChatController extends Controller
             'status' => true,
             'content' => $request->content
         ]);
+
+        try{
+            event(new MessageSent($message));
+        } catch (\Throwable $e) {
+            \Log::error($e->getMessage());
+        }
 
         return response()->json(['message' => $message, 'success' => true]);
     }
