@@ -14,31 +14,29 @@ class ChatController extends Controller
         return view('chat.index', compact('users'));
     }
 
-    public function conversation(User $user) {
-        $auth = auth()->id();
-
-        if (request()->expectsJson()) {
-            return Message::where(function ($q) use ($user) {
-                    $q->where('sender_id', auth()->id())
-                    ->where('receiver_id', $user->id);
-                })
-                ->orWhere(function ($q) use ($user) {
-                    $q->where('sender_id', $user->id)
-                    ->where('receiver_id', auth()->id());
-                        })
-                ->orderBy('created_at')
-                ->get();
-
-            //return response()->json([$messages]);
-        }
+    public function conversation(User $user)
+    {
         $users = User::where('id', '!=', auth()->id())->get();
+
         return view('chat.conversation', compact('user', 'users'));
     }
 
-    public function send(Request $request, User $user) {
-        $request->validate(['content' => 'required|string|max:2000']);
+    public function messages(User $user)
+    {
+        return Message::where(function ($q) use ($user) {
+                $q->where('sender_id', auth()->id())
+                ->where('receiver_id', $user->id);
+            })
+            ->orWhere(function ($q) use ($user) {
+                $q->where('sender_id', $user->id)
+                ->where('receiver_id', auth()->id());
+            })
+            ->orderBy('created_at')
+            ->get();
+    }
 
-        //$validated = $request->validated();
+    public function send(Request $request, User $user) {
+        $request->validate(['content' => 'required|string|max:5000']);
         
         $message = Message::create([
             'sender_id' => auth()->id(),

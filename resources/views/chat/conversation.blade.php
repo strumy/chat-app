@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="d-flex flex-column h-100 p-3 bg-dark"
-     x-data="chatComponent({{ $user->id }}, '{{ route('chat.list', $user->id) }}', '{{ route('chat.send', $user->id) }}')"
+     x-data="chatComponent({{ $user->id }}, '{{ route('chat.messages', $user->id) }}', '{{ route('chat.send', $user->id) }}')"
      x-init="init()">
 
     <!-- Chat Header -->
@@ -82,6 +82,7 @@ function chatComponent(userId, fetchUrl, sendUrl) {
 
         async loadMessages() {
             try {
+                this.loading = true;
                 const res = await fetch(this.fetchUrl, { 
                     headers: { 'Accept': 'application/json' }});
 
