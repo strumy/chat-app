@@ -13,7 +13,7 @@ Chat App is a simple Laravel (v.13) application with packages, breeze, reverb, e
 ### Pre-requisites:
   --PHP >= PHP 8
   --Composer
-  --PostgreSQl
+  --PostgreSQL
 
 ### Clone the repository, or download the zip file and extract it.
 
