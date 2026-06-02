@@ -1,7 +1,7 @@
 # chat-app
 This is the code base for a simple Laravel chat application.
 
-CHat App is a simple Laravel (v.13) application with packages, breeze, reverb, echo and pusher to enable loggedin users to exchange messages 1-to-1 in real time.
+Chat App is a simple Laravel (v.13) application with packages, breeze, reverb, echo and pusher to enable loggedin users to exchange messages 1-to-1 in real time.
 
 ## Features
 - User Login
