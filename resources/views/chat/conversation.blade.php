@@ -12,6 +12,14 @@
     <!-- Chat Header -->
     <div class="border-bottom pb-2 mb-3">
         <h5 class="mb-0"><i class="fa-solid fa-user"></i> {{ $user->name }}</h5>
+        @if($user->isOnline())
+            <span class="text-success text-bold">Online</span>
+        @else
+            <span class="text-white">
+                Last seen:
+                {{ $user->last_seen_at?->diffForHumans() }}
+            </span>
+        @endif
     </div>
 
     <div x-show="error" class="alert alert-danger" x-text="error"></div>
@@ -45,6 +53,7 @@
 </div>
 
 <script>
+
 function chatComponent(userId, fetchUrl, sendUrl) {
     return {
         authId: {{ auth()->id() }},
@@ -56,9 +65,7 @@ function chatComponent(userId, fetchUrl, sendUrl) {
         loading: false, 
 
         init() {
-            //console.log("fetchUrl:", this.fetchUrl);
             this.loadMessages();
-            //setInterval(() => this.loadMessages(), 3000);
 
             if (window.Echo) {
                 window.Echo.private('chat.' + this.authId)
@@ -74,6 +81,28 @@ function chatComponent(userId, fetchUrl, sendUrl) {
                         this.$nextTick(() => {
                             this.$refs.messagesBox.scrollTop = this.$refs.messagesBox.scrollHeight;
                         });
+                    });
+                console.log('Subscribing to user-status');
+                window.Echo.channel('user-status')
+                    .subscribed(() => {
+                        console.log('Subscribed to user-status');
+                    })
+                    .error((error) => {
+                        console.error(
+                            'User status channel error',
+                            error
+                        );
+                    })
+                    .listen('.user.status.changed', (e) => {
+                        console.log('Status update', e);
+
+                        if (e.online) {
+                            console.log(`User ${e.id} is ONLINE`);
+                            showOnlineIndicator(e.id);
+                        } else {
+                            console.log(`User ${e.id} is OFFLINE`);
+                            showOfflineIndicator(e.id, e.last_seen_at);
+                        }
                     });
             } else {
                 console.error("Echo not loaded yet");

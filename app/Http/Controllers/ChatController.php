@@ -6,22 +6,25 @@ use \Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Message;
 use App\Events\MessageSent;
+use Illuminate\Support\Facades\Log;
+use App\Events\UserStatusChanged;
 
 class ChatController extends Controller
 {
     public function index() {
         $users = User::where('id', '!=', auth()->id())->get();
+
         return view('chat.index', compact('users'));
     }
 
-    public function conversation(User $user)
+    public function getConversation(User $user)
     {
         $users = User::where('id', '!=', auth()->id())->get();
 
         return view('chat.conversation', compact('user', 'users'));
     }
 
-    public function messages(User $user)
+    public function getUserMessages(User $user)
     {
         return Message::where(function ($q) use ($user) {
                 $q->where('sender_id', auth()->id())
@@ -52,5 +55,42 @@ class ChatController extends Controller
         }
 
         return response()->json(['message' => $message, 'success' => true]);
+    }
+
+    public function updateHeartbeat() {
+        $user = User::find(auth()->id());
+
+        $wasOffline = $user->offline_broadcasted;
+
+        Log::info('Heartbeat received', [
+            'user_id' => $user->id,
+            'was_offline' => $wasOffline,
+            'last_seen_at' => $user->last_seen_at,
+        ]);
+
+        $user->update([
+            'last_seen_at' => now(),
+            'offline_broadcasted' => false,
+        ]);
+
+        $user->refresh();
+
+        if ($wasOffline) {
+
+            Log::info('ONLINE transition', [
+                'user_id' => $user->id,
+            ]);
+
+            broadcast(
+                new UserStatusChanged(
+                    $user,
+                    true
+                )
+            )->toOthers();
+        }
+
+        return response()->json([
+            'success' => true,
+        ]);
     }
 }

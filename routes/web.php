@@ -16,9 +16,12 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
-    Route::get('/chat/list/{user}', [ChatController::class, 'conversation'])->name('chat.list');
-    Route::get('/chat/list/{user}/messages', [ChatController::class, 'messages'])->name('chat.messages');
+    Route::get('/chat/list/{user}', [ChatController::class, 'getConversation'])->name('chat.list');
+    Route::get('/chat/list/{user}/messages', [ChatController::class, 'getUserMessages'])->name('chat.messages');
     Route::post('/chat/send/{user}', [ChatController::class, 'send'])->name('chat.send');
+    Route::post('/chat/heartbeat', [ChatController::class, 'updateHeartbeat'])->name('chat.heartbeat');
 });
+
+
 
 require __DIR__.'/auth.php';

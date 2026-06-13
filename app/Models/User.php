@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 
 
-#[Fillable(['name', 'email', 'password'])]
+#[Fillable(['name', 'email', 'password', 'last_seen_at', 'offline_broadcasted'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable
 {
@@ -31,8 +31,13 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'last_seen_at' => 'datetime',
         ];
     }
+
+    protected $casts = [
+        'last_seen_at' => 'datetime',
+    ];
 
     public function sentMessages():HasMany
     {
@@ -43,4 +48,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }
+
+    public function isOnline(): bool
+    {
+        return $this->last_seen_at &&
+            $this->last_seen_at->gt(now()->subSeconds(90));
+    }
+
+    
 }
